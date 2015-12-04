@@ -21,7 +21,6 @@ Number of Generations: <input id="strgens" type="string" name = "string Gens" >
 <p id="runText"></p>
 
 <script>
-
 function run()
 {
   var goal;
@@ -58,7 +57,6 @@ function run()
   }
   document.getElementById("runText").innerHTML = text;
 }
-
 // performs each iteration of the genetic algorithm
 function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
 {
@@ -109,9 +107,9 @@ function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
     closestmatch = best;
   }
   
-  text += " Closest matching in this set = " + best + "<br>";
-  text += "Closest overall match = " + closestmatch + "<br>";
-  if(generations > 0 )
+  text += " Closest matching in this set = " + best + " with a value of " + getfitness(best,goal) + "<br>";
+  text += "Closest overall match = " + closestmatch + " with a value of " + getfitness(closestmatch,goal) + "<br>";
+  if(generations > 0 && closestmatch != goal)
   {
   text += best + ", " + rand1 + ", " + rand2 + ", " + rand3 + " selected for breeding <br>"
   }
@@ -127,7 +125,7 @@ function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
   
   
   
-  if( (generations) > 0)
+  if( (generations) > 0 && closestmatch != goal)
   {
     generations --;
     return geneticalgorithm(newstrarray, goal, generations, text,closestmatch);
@@ -138,7 +136,6 @@ function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
   }
   
 }
-
 //checks the fitness of the current string with respect to the goal
 function getfitness(str, goal)
 {
@@ -158,7 +155,6 @@ function getfitness(str, goal)
   }
   return fitness;
 }
-
 // Mutates the string str into a new string
 function mutate(str, percentage)
 {
@@ -198,7 +194,6 @@ function breed(str1,str2)
   
   return newstr;
 }
-
 </script>
 
 </body>
