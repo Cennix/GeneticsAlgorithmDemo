@@ -64,7 +64,7 @@ function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
 {
   var best = 0;
   var fitarray = [];
-  var mutatechance = 5;
+  var mutatechance = 1;
   
   text += + generations + ": ";
   text += "<1> = " + stringarray[0]+ ", ";
@@ -72,7 +72,7 @@ function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
   text += "<3> = " + stringarray[2]+ ", ";
   text += "<4> = " + stringarray[3]+ ", ";
   text += "<5> = " + stringarray[4]+ ", ";
-  text += "<6> = " + stringarray[5]+ ". ";
+  text += "<6> = " + stringarray[5]+ ".<br>";
   
   for(i=0;i<stringarray.length;i++)
   {
@@ -109,10 +109,12 @@ function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
     closestmatch = best;
   }
   
-  text += " Closest matching = " + best + "<br>";
-  
+  text += " Closest matching in this set = " + best + "<br>";
+  text += "Closest overall match = " + closestmatch + "<br>";
+  if(generations > 0 )
+  {
   text += best + ", " + rand1 + ", " + rand2 + ", " + rand3 + " selected for breeding <br>"
-
+  }
   var newstrarray = 
   [
     mutate(breed(best,rand1),mutatechance),
@@ -177,7 +179,7 @@ function mutate(str, percentage)
   
   return newstr;
 }
-
+// the function which does breeding within the algorithm, takes 2 strings, outputs a string which is a mix of both
 function breed(str1,str2)
 {
   var newstr = "";
