@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Genetic Algorithm Demo</h1>
+
+<p>Please input 6 strings of the same length + a goal + a number of generations</p>
+
+1: <input id="str1" type="text" name = "string 1">
+2: <input id="str2" type="text" name = "string 2">
+3: <input id="str3" type="text" name = "string 3">  <br>  <br>
+4: <input id="str4" type="text" name = "string 4"> 
+5: <input id="str5" type="text" name = "string 5">
+6: <input id="str6" type="text" name = "string 6">  <br>  <br>
+
+Goal: <input id="strgoal" type="string" name = "string Goal" >
+Number of Generations: <input id="strgens" type="string" name = "string Gens" >
+
+<button type="button" onclick="run()">Submit</button>
+
+<p id="runText"></p>
+
+<script>
+
+function run()
+{
+  var goal;
+  var gens;
+  var closestmatch;
+  var error = 0;
+  var text = "";
+  var str = [];
+  
+  // push all the strings into the array
+  str.push(document.getElementById("str1").value);
+  str.push(document.getElementById("str2").value);
+  str.push(document.getElementById("str3").value);
+  str.push(document.getElementById("str4").value);
+  str.push(document.getElementById("str5").value);
+  str.push(document.getElementById("str6").value);
+  
+  goal = document.getElementById("strgoal").value;
+  gens = Number(document.getElementById("strgens").value);
+  closestmatch = str[0];
+  
+  for(i=0; i<str.length;i++)
+  {
+    if(str[i].length != goal.length)
+    {
+      text += "String number: " + (i+1) + " is not of the same length as the goal <br>"
+      error = 1;
+    }
+  }
+  
+  if(error != 1)
+  {
+    text = geneticalgorithm(str, goal, gens, text,closestmatch);
+  }
+  document.getElementById("runText").innerHTML = text;
+}
+
+// performs each iteration of the genetic algorithm
+function geneticalgorithm(stringarray, goal, generations, text, closestmatch)
+{
+  var best = 0;
+  var fitarray = [];
+  var mutatechance = 5;
+  
+  text += + generations + ": ";
+  text += "<1> = " + stringarray[0]+ ", ";
+  text += "<2> = " + stringarray[1]+ ", ";
+  text += "<3> = " + stringarray[2]+ ", ";
+  text += "<4> = " + stringarray[3]+ ", ";
+  text += "<5> = " + stringarray[4]+ ", ";
+  text += "<6> = " + stringarray[5]+ ". ";
+  
+  for(i=0;i<stringarray.length;i++)
+  {
+    fitarray.push(getfitness(stringarray[i],goal));
+  }
+  
+  for(i=0;i<fitarray.length;i++)
+  {
+    if(fitarray[i] > fitarray[best])
+    {
+      best = i;
+    }
+  }
+  
+  var rand1 = Math.floor(Math.random() * stringarray.length);
+  var rand2 = Math.floor(Math.random() * stringarray.length);
+  var rand3 = Math.floor(Math.random() * stringarray.length);
+  
+  while(rand1 == best || rand2 == best || rand3 == best || rand1 == rand2 || rand1 == rand3 || rand2 == rand3)
+  {
+    rand1 = Math.floor(Math.random() * stringarray.length);
+    rand2 = Math.floor(Math.random() * stringarray.length);
+    rand3 = Math.floor(Math.random() * stringarray.length);
+  }
+  
+  
+  best = stringarray[best];
+  rand1 = stringarray[rand1];
+  rand2 = stringarray[rand2];
+  rand3 = stringarray[rand3];
+  
+  if(getfitness(best,goal) > getfitness(closestmatch,goal))
+  {
+    closestmatch = best;
+  }
+  
+  text += " Closest matching = " + best + "<br>";
+  
+  text += best + ", " + rand1 + ", " + rand2 + ", " + rand3 + " selected for breeding <br>"
+
+  var newstrarray = 
+  [
+    mutate(breed(best,rand1),mutatechance),
+    mutate(breed(best,rand2),mutatechance),
+    mutate(breed(best,rand3),mutatechance),
+    mutate(breed(rand1,rand2),mutatechance),
+    mutate(breed(rand1,rand3),mutatechance),
+    mutate(breed(rand2,rand3),mutatechance)
+  ];
+  
+  
+  
+  if( (generations) > 0)
+  {
+    generations --;
+    return geneticalgorithm(newstrarray, goal, generations, text,closestmatch);
+  }
+  else
+  { 
+    return text;
+  }
+  
+}
+
+//checks the fitness of the current string with respect to the goal
+function getfitness(str, goal)
+{
+  var fitness = 0;
+  var goalarray = goal.split("");
+  
+  for(j=0; j< goalarray.length; j++)
+  {
+    if(str.indexOf(goalarray[j])!= -1)
+    {
+      fitness ++;
+    }
+    if(str.substr(j,1) == goalarray[j])
+    {
+      fitness++;
+    }
+  }
+  return fitness;
+}
+
+// Mutates the string str into a new string
+function mutate(str, percentage)
+{
+  var newstr = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  
+  for(j=0; j<str.length;j++)
+  {
+    if(Math.random() < (percentage/100))
+    {
+      newstr += possible.charAt(Math.floor(Math.random() * possible.length)); 
+    }
+    else
+    {
+      newstr += str[j];
+    }
+  }
+  
+  return newstr;
+}
+
+function breed(str1,str2)
+{
+  var newstr = "";
+  
+  for(j=0;j<str1.length;j++)
+  {
+    if(Math.random() < 0.5)
+    {
+      newstr += str1.charAt(j);
+    }
+    else
+    {
+      newstr += str2.charAt(j);
+    }
+  }
+  
+  return newstr;
+}
+
+</script>
+
+</body>
